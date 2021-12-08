@@ -1,12 +1,18 @@
 # Laravel HeroIcons
 
-This is a simple, but opinionated package, useful for rendering of hero icons.
+This is a simple, but opinionated package, useful for easily rendering hero icons.
 
-HeroIcons are provided by the makers of tailwindcss, and you can find them here:
-[https://heroicons.com/](https://heroicons.com/)
+As simple as this (in your blade file):
+
+```html
+@heroIcon('arrow-right')
+```
 
 This package provides you the option to easily include hero icons in your blade files, but also manipulate the
 html in the icon svg.
+
+HeroIcons are provided by the makers of tailwindcss, and you can find them here:
+[https://heroicons.com/](https://heroicons.com/)
 
 ## Installation
 
@@ -15,6 +21,41 @@ Import the package in your Laravel project via composer:
 `composer require antonioprimera/laravel-heroicons`
 
 ## Usage
+
+### Blade directive
+
+The package sets up a dedicated blade directive `@heroIcon('icon-name', 'icon-format')`. This creates an
+icon instance and renders it. The first argument is the name (mandatory) and the second argument is the format,
+which is optional and must be either 'solid' or 'outline'. If not provided, the default format is 'outline'.
+
+```html
+<div class="w-6">
+    @heroIcon('arrow-down', 'outline')
+</div>
+<div class="w-6">
+    @heroIcon('arrow-up')
+</div>
+```
+
+This blade directive is created to use the full power of view caching, so it only accepts static (string) parameters,
+and no variables or constants.
+
+If you need a more flexible option, you can use the blade directive `@dynamicHeroIcon($name, $format, $options)`.
+This directive will not cache the svg string, but will re-render the svg every time the view is rendered. With
+this blade directive, you can use variables and constants.
+
+```html
+<div class="w-6">
+	@dynamicHeroIcon($iconName, AntonioPrimera\HeroIcons\HeroIcon::FORMAT_SOLID)
+</div>
+<div class="w-6">
+	@dynamicHeroIcon($iconName, $format, AntonioPrimera\HeroIcons\HeroIcon::SVG_REMOVE_SIZE)
+</div>
+<div class="w-6">
+    <!-- You can also use the dynamic hero icon like the static one-->
+    @dynamicHeroIcon('arrow-left')
+</div>
+```
 
 ### HeroIcon instance
 
@@ -64,41 +105,6 @@ icon's color will be the color set in the parent container.
 If SVG_REMOVE_SIZE is set, then the default size of the icons (width and height, in pixels) is removed, so that the
 icon can be resized using classes. In my opinion (this is purely subjective), the best way to use icons, is to set
 its width to 100% of the parent container and to resize the parent container.
-
-### Blade directive
-
-The package sets up a dedicated blade directive `@heroIcon('icon-name', 'icon-format')`. This creates an
-icon instance and renders it. The 2 arguments are the same as the name and the format for the HeroIcon constructor.
-Only the name is required, the format is optional and 'outline' by default.
-
-```html
-<div class="w-6">
-    @heroIcon('arrow-down', 'outline')
-</div>
-<div class="w-6">
-    @heroIcon('arrow-up')
-</div>
-```
-
-This blade directive is created to use the full power of view caching, so it only accepts static (string) parameters,
-and no variables or constants.
-
-If you need a more flexible option, you can use the blade directive `@dynamicHeroIcon($name, $format, $options)`.
-This directive will not cache the svg string, but will re-render the svg every time the view is rendered. With
-this blade directive, you can use variables and constants.
-
-```html
-<div class="w-6">
-	@dynamicHeroIcon($iconName, AntonioPrimera\HeroIcons\HeroIcon::FORMAT_SOLID)
-</div>
-<div class="w-6">
-	@dynamicHeroIcon($iconName, $format, AntonioPrimera\HeroIcons\HeroIcon::SVG_REMOVE_SIZE)
-</div>
-<div class="w-6">
-    <!-- You can also use the dynamic hero icon like the static one-->
-    @dynamicHeroIcon('arrow-left')
-</div>
-```
 
 ### Helper
 
