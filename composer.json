@@ -1,0 +1,33 @@
+{
+    "name": "antonioprimera/laravel-heroicons",
+    "description": "A very slim package to render hero icons directly from the icon svg files.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Antonio Primera",
+            "email": "antonio@cus.ro"
+        }
+    ],
+    "require": {
+        "meyfa/php-svg": "^0.11.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "AntonioPrimera\\HeroIcons\\": "src/"
+        },
+
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "AntonioPrimera\\HeroIcons\\Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "orchestra/testbench": "^6.0",
+        "antonioprimera/lara-packager": "*"
+    }
+}
