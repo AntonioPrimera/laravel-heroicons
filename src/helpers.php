@@ -1,20 +1,19 @@
 <?php
 
-function heroicon(
+use AntonioPrimera\HeroIcons\HeroIcon;
+
+function heroIcon(
 	string $name,
-	string $format = \AntonioPrimera\HeroIcons\HeroIcon::FORMAT_OUTLINE,
+	string $format = HeroIcon::FORMAT_OUTLINE,
 	$classes = '',
-	bool $removeSize = true,
-	array $attributes = []
-)
+	array $attributes = [],
+	int $options = HeroIcon::SVG_REMOVE_SIZE | HeroIcon::SVG_CURRENT_COLOR
+): string
 {
-	$icon = \AntonioPrimera\HeroIcons\HeroIcon::get($name, $format);
+	$icon = new HeroIcon($name, $format, $options);
 	
 	if ($classes)
 		$icon->setClass($classes);
-	
-	if ($removeSize)
-		$icon->removeSize();
 	
 	if ($attributes)
 		$icon->setAttributes($attributes);

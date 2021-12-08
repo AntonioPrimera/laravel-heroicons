@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Artisan;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
-	use RefreshDatabase;
+	//use RefreshDatabase;
 
 	/**
 	 * Override this and provide a list of:
