@@ -106,6 +106,11 @@ If SVG_REMOVE_SIZE is set, then the default size of the icons (width and height,
 icon can be resized using classes. In my opinion (this is purely subjective), the best way to use icons, is to set
 its width to 100% of the parent container and to resize the parent container.
 
+### HeroIcon static constructor
+
+You can use the static method `HeroIcon::create(...)` with the same signature as the constructor, to create a new
+HeroIcon instance.
+
 ### Helper
 
 A heroIcon helper function is also available.
@@ -125,6 +130,16 @@ function heroIcon(
 The helper function will return the rendered html of the svg icon, optionally applying one or more classes
 (as a string or array) and a set of attributes.
 
+
+### Htmlable
+
+The HeroIcon class implements the Htmlable interface, so you can just drop a HeroIcon instance inside your blade
+files, between double curly braces, and it will be rendered into an html svg icon. Here's an example:
+
+```php
+<div>{{ HeroIcon::create('server')->setClass('w-6') }} My Server</div>
+```
+
 ### Methods
 
 Once created, the icon instance can be configured, adding css classes on the outer svg node,
@@ -139,6 +154,11 @@ provided as a string or as an indexed array.
 
 This method allows you to set one or more attributes on the outer svg node, provided an associative
 array of attribute name => value pairs.
+
+#### setPathAttributes(array $attributes)
+
+This method allows you to set one or more attributes on all path nodes inside the svg. The attributes
+must be provided as an associative array of attributeName => attributeValue pairs.
 
 #### getSvgInstance()
 

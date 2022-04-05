@@ -2,10 +2,11 @@
 
 namespace AntonioPrimera\HeroIcons;
 
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Str;
 use SVG\SVG;
 
-class HeroIcon
+class HeroIcon implements Htmlable, \Stringable
 {
 	const FORMAT_OUTLINE = 'outline';
 	const FORMAT_SOLID   = 'solid';
@@ -28,10 +29,6 @@ class HeroIcon
 	 * The options allow you to remove the hard-coded size of the hero-icon (and let its container determine the size)
 	 * and to remove the hard-coded stroke color and to set the stroke to currentColor, so the icon takes the color
 	 * set on its parent container.
-	 *
-	 * @param string $name
-	 * @param string $format
-	 * @param int    $options
 	 */
 	public function __construct(
 		string $name,
@@ -57,15 +54,25 @@ class HeroIcon
 	}
 	
 	/**
+	 * Static method to instantiate a HeroIcon - just syntactic sugar.
+	 */
+	public static function create(
+		string $name,
+		string $format = self::FORMAT_OUTLINE,
+		int $options = self::SVG_REMOVE_SIZE | self::SVG_CURRENT_COLOR
+	): HeroIcon
+	{
+		return new static($name, $format, $options);
+	}
+	
+	//--- Svg nodes manipulation methods ------------------------------------------------------------------------------
+	
+	/**
 	 * Set the class attribute of the svg node.
 	 * It accepts a string or an indexed
 	 * array of class names.
-	 *
-	 * @param string | array $classes
-	 *
-	 * @return $this
 	 */
-	public function setClass($classes = [])
+	public function setClass($classes = []): HeroIcon
 	{
 		$classString = is_array($classes) ? implode(' ', $classes) : $classes;
 		$this->svgInstance->getDocument()->setAttribute('class', $classString);
@@ -76,13 +83,8 @@ class HeroIcon
 	/**
 	 * Set the 'width' and 'height' attributes
 	 * on the outer svg node, in pixels.
-	 *
-	 * @param $width
-	 * @param $height
-	 *
-	 * @return $this
 	 */
-	public function setSize(int $width, int $height)
+	public function setSize(int $width, int $height): HeroIcon
 	{
 		if (is_numeric($width))
 			$this->svgInstance->getDocument()->setWidth($width);
@@ -96,10 +98,8 @@ class HeroIcon
 	/**
 	 * Removes the 'width' and the 'height'
 	 * attributes from the svg node.
-	 *
-	 * @return $this
 	 */
-	public function removeSize()
+	public function removeSize(): HeroIcon
 	{
 		$this->svgInstance
 			->getDocument()
@@ -113,12 +113,8 @@ class HeroIcon
 	 * Set any attributes on the outer svg node.
 	 * It accepts an array of associative
 	 * name => value pairs.
-	 *
-	 * @param array $attributes
-	 *
-	 * @return $this
 	 */
-	public function setAttributes(array $attributes)
+	public function setAttributes(array $attributes): HeroIcon
 	{
 		foreach ($attributes as $name => $value)
 			$this->svgInstance
@@ -128,14 +124,28 @@ class HeroIcon
 		return $this;
 	}
 	
+	public function setPathAttributes(array $attributes): HeroIcon
+	{
+		$document = $this->svgInstance->getDocument();
+		
+		foreach ($attributes as $name => $value) {
+			//set each attribute on all path nodes
+			for ($i = 0; $i < $document->countChildren(); $i++) {
+				$child = $document->getChild($i);
+				if ($child->getName() === 'path')
+					$child->setAttribute($name, $value);
+			}
+		}
+		
+		return $this;
+	}
+	
 	/**
 	 * Remove any stroke styles and attributes from the outer and inner nodes and
 	 * set a stroke="currentColor" attribute on the outer svg node. This will
 	 * force the svg to take the color set on its containing node.
-	 *
-	 * @return $this
 	 */
-	public function useCurrentColor()
+	public function useCurrentColor(): HeroIcon
 	{
 		$document = $this->svgInstance->getDocument();
 		
@@ -150,29 +160,32 @@ class HeroIcon
 	}
 	
 	/**
+	 * For more control, you can get access
+	 * to the svg instance itself.
+	 */
+	public function getSvgInstance(): SVG
+	{
+		return $this->svgInstance;
+	}
+	
+	//--- Rendering the SVG -------------------------------------------------------------------------------------------
+	
+	/**
 	 * Render the svg to a html string
-	 *
-	 * @return string
 	 */
 	public function render(): string
 	{
 		return $this->svgInstance->toXMLString();
 	}
 	
-	public function __toString()
+	public function toHtml()
 	{
 		return $this->render();
 	}
 	
-	/**
-	 * For more control, you can get access
-	 * to the svg instance itself.
-	 *
-	 * @return SVG
-	 */
-	public function getSvgInstance()
+	public function __toString()
 	{
-		return $this->svgInstance;
+		return $this->render();
 	}
 	
 	//--- Protected helpers -------------------------------------------------------------------------------------------
